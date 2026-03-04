@@ -1,8 +1,9 @@
 import os
+from configs.settings import KNOWLEDGE_PATH
 
 class KnowledgeBase:
-    def __init__(self, docs_path="knowledge/kernel"):
-        self.docs_path = docs_path
+    def __init__(self, docs_path=None):
+        self.docs_path = docs_path or KNOWLEDGE_PATH
         self.knowledge = {}
         self.load_docs()
 

@@ -1,0 +1,3 @@
+# Install only where you run training (e.g. another laptop)
+tensorflow>=2.12
+datasets>=2.14

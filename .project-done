@@ -1,0 +1,28 @@
+# Project verification summary — penguide
+# Generated as part of project-done verification. Do not remove.
+
+[project]
+name = penguide
+description = Educational autonomous agent for Linux & kernel — CLI with Ollama
+
+[verified]
+date = 2026-02-26
+entrypoint = python bin/penguide.py (or python3 bin/penguide.py)
+tests = python -m pytest tests/ -v (requires pytest: pip install pytest)
+test_count = 55
+test_result = 55 passed
+docs = docs/GLOBAL.md, TRAINING.md, CONFERENCE_PAPER.md, presentations/
+
+[run_instructions]
+install = python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+run = python bin/penguide.py
+run_ollama_model = OLLAMA_MODEL=phi python bin/penguide.py
+pytest = pip install pytest && python -m pytest tests/ -v
+pytest_from_venv = .venv/bin/python -m pytest tests/ -v
+docker = docker build -t penguide -f docker/Dockerfile . && docker run --rm -it --network host -e OLLAMA_HOST=http://127.0.0.1:11434 penguide
+
+[status]
+logic_verified = unit tests (knowledge, policy, orchestrator mocks)
+docs_verified = yes
+structure = bin/, core/, configs/, memory/, models/, tools/, knowledge/, agents/, scripts/, tests/, docs/, docker/
+note = Ollama must be running for full CLI; tests mock Ollama

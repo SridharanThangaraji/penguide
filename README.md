@@ -31,17 +31,34 @@ graph TD
 
 ### Installation
 
-1. Install [Ollama](https://ollama.ai/).
-2. Pull a model: `ollama pull mistral`.
-3. Check dependencies:
+1. **Install [Ollama](https://ollama.ai/).**
+
+2. **Pull a model.** Default is Mistral (~4.5 GiB RAM). If you have less memory, use a smaller model:
    ```bash
+   ollama pull mistral          # default, needs ~4.5 GiB RAM
+   ollama pull phi              # smaller, ~1.6 GiB
+   ollama pull tinyllama        # very small, ~0.5 GiB
+   ```
+
+3. **Python dependencies** — use a virtual environment (recommended on Linux, especially Arch):
+   ```bash
+   cd /path/to/penguide
+   python3 -m venv .venv
+   source .venv/bin/activate    # Linux/macOS; on Windows: .venv\Scripts\activate
    pip install -r requirements.txt
    ```
+   *(Note: use `pip install -r requirements.txt` with `-r`, not `pip install requirements.txt`.)*
 
 ### Usage
 
-Start the guide:
+Start the guide (with venv activated):
 ```bash
+python3 bin/penguide.py
+```
+
+**If you use a smaller model**, set it before running:
+```bash
+export OLLAMA_MODEL=phi        # or tinyllama, etc.
 python3 bin/penguide.py
 ```
 
@@ -55,7 +72,24 @@ Example queries:
 - `bin/`: CLI entry point.
 - `core/`: Agent logic, Orchestrator, and Knowledge Base.
 - `knowledge/kernel/`: Sample kernel documentation files.
-- `configs/`: Security policies and shell restrictions.
+- `configs/`: Security policies, central settings (env).
+- `memory/`: Conversation history (in-memory).
+- `models/`: Ollama client.
+- `tools/`: Shell runner and tool registry.
+- `docs/`: Global documentation (end-to-end flow, training).
+- `docs/presentations/`: Slides, conference decks, evaluation PDFs & screenshots.
+- `scripts/`: Dataset fetch and TensorFlow training (optional; run training on another machine).
+
+## Documentation
+
+- **[docs/GLOBAL.md](docs/GLOBAL.md)** — End-to-end architecture, data flow, configuration, security.
+- **[docs/TRAINING.md](docs/TRAINING.md)** — Fetching training data and running TensorFlow training on another laptop.
+- **[docs/CONFERENCE_PAPER.md](docs/CONFERENCE_PAPER.md)** — Full conference paper (academic description, related work, design, implementation, evaluation directions).
+
+## Optional: Training (on another laptop)
+
+1. Fetch data: `python scripts/fetch_training_data.py` (writes `data/training_pairs.jsonl`).
+2. Copy `data/` and `scripts/` to the other machine, then: `pip install -r requirements-training.txt` and `python scripts/train_tensorflow.py --out ./saved_model`.
 
 ---
 *Created for Final Year Project - Focused on Educational AI in Linux Systems.*
