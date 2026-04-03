@@ -1,5 +1,5 @@
 import os
-from configs.settings import KNOWLEDGE_PATH
+from configs.settings import KNOWLEDGE_PATH, KB_MAX_CHARS
 
 class KnowledgeBase:
     def __init__(self, docs_path=None):
@@ -31,4 +31,6 @@ class KnowledgeBase:
             elif "kernel" in user_input_lower:
                  relevant_context += f"\n--- From Kernel Doc: {title} ---\n{content}\n"
         
+        if KB_MAX_CHARS and len(relevant_context) > KB_MAX_CHARS:
+            relevant_context = relevant_context[:KB_MAX_CHARS] + "\n[... truncated for low-resource mode ...]"
         return relevant_context

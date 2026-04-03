@@ -9,7 +9,20 @@ OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "mistral")
 OLLAMA_TIMEOUT = int(os.environ.get("OLLAMA_TIMEOUT", "20"))
 
 # Memory: max conversation turns to include in context (avoid token overflow)
+# Lower = less RAM/CPU for the model. Use 3–6 on slow/low-memory machines.
 MEMORY_MAX_TURNS = int(os.environ.get("PENGUIDE_MEMORY_MAX_TURNS", "20"))
+
+# Low-resource mode: smaller context, shorter prompts (set PENGUIDE_LOW_RESOURCE=1)
+# Use when the laptop becomes slow or unusable while running Penguide.
+LOW_RESOURCE = os.environ.get("PENGUIDE_LOW_RESOURCE", "").strip().lower() in ("1", "true", "yes")
+if LOW_RESOURCE:
+    MEMORY_MAX_TURNS = int(os.environ.get("PENGUIDE_MEMORY_MAX_TURNS", "4"))
+
+# Knowledge base: max chars to inject per query (0 = no limit). Capped in low-resource mode.
+_KB_MAX_DEFAULT = "1500" if LOW_RESOURCE else "0"
+KB_MAX_CHARS = int(os.environ.get("PENGUIDE_KB_MAX_CHARS", _KB_MAX_DEFAULT))
+if KB_MAX_CHARS == 0 and LOW_RESOURCE:
+    KB_MAX_CHARS = 1500
 
 # Knowledge base path (relative to project root or absolute)
 KNOWLEDGE_PATH = os.environ.get("PENGUIDE_KNOWLEDGE_PATH", "knowledge/kernel")

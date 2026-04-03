@@ -8,7 +8,7 @@ if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
 from core.orchestrator import Orchestrator
-from configs.settings import OLLAMA_MODEL
+from configs.settings import OLLAMA_MODEL, LOW_RESOURCE
 from configs.policy import ALLOWED_COMMANDS, DENY_COMMANDS
 from tools.registry import TOOLS
 
@@ -90,6 +90,8 @@ def _print_welcome(mode: str):
     print(title)
     print(_color(f"Model: {model}", FG_MAGENTA))
     print(_color(f"Teaching mode: {mode}", FG_MAGENTA))
+    if LOW_RESOURCE:
+        print(_color("Low-resource mode: ON (smaller context, less CPU/RAM)", FG_YELLOW))
     print()
     print("Type your question in natural language.")
     print("Penguide will explain and may safely run ONE Linux command for you.")

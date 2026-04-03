@@ -5,6 +5,7 @@ from memory.memory import Memory
 from core.knowledge import KnowledgeBase
 from configs.teaching import DEFAULT_TEACHING_MODE, COMMAND_TEACHING_HINTS
 from configs.policy import ALLOWED_COMMANDS
+from configs.settings import LOW_RESOURCE
 import os
 import re
 
@@ -59,19 +60,24 @@ class Orchestrator:
         base = user_input.split()[0] if user_input else ""
         hint = COMMAND_TEACHING_HINTS.get(base, {}).get(self.teaching_mode, "")
         teaching_header = f"Teaching mode: {self.teaching_mode}.\n"
-        env_hint = (
-            f"The user's home directory is: {os.path.expanduser('~')}.\n"
-            f"The current working directory is: {os.getcwd()}.\n"
-            "When the user refers to their home directory, prefer '~' or '$HOME'. "
-            "For project-related paths, prefer using the current working directory or subdirectories under it, "
-            "instead of inventing new absolute paths.\n"
-        )
-        allowed_list = ", ".join(sorted(ALLOWED_COMMANDS))
-        policy_hint = (
-            "You may only run one shell command per response, and only if it is in this allow-list: "
-            f"{allowed_list}.\n"
-        )
-        hint_block = f"Command teaching hint for `{base}`: {hint}\n" if hint else ""
+        if LOW_RESOURCE:
+            env_hint = "Use ~ for home. One command per response from allow-list.\n"
+            policy_hint = "Allowed: ls, cat, pwd, whoami, ps, df, du, grep, find, ip, ss, mkdir, touch, cp, mv, rm, date.\n"
+            hint_block = ""
+        else:
+            env_hint = (
+                f"The user's home directory is: {os.path.expanduser('~')}.\n"
+                f"The current working directory is: {os.getcwd()}.\n"
+                "When the user refers to their home directory, prefer '~' or '$HOME'. "
+                "For project-related paths, prefer using the current working directory or subdirectories under it, "
+                "instead of inventing new absolute paths.\n"
+            )
+            allowed_list = ", ".join(sorted(ALLOWED_COMMANDS))
+            policy_hint = (
+                "You may only run one shell command per response, and only if it is in this allow-list: "
+                f"{allowed_list}.\n"
+            )
+            hint_block = f"Command teaching hint for `{base}`: {hint}\n" if hint else ""
 
         prompt = f"{SYSTEM_PROMPT}\n{teaching_header}{env_hint}{policy_hint}{hint_block}User: {user_input}"
 

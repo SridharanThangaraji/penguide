@@ -62,6 +62,18 @@ export OLLAMA_MODEL=phi        # or tinyllama, etc.
 python3 bin/penguide.py
 ```
 
+**If your laptop becomes slow or unusable** (high CPU/memory) while running Penguide:
+- Use the **smallest model** you can: `ollama pull tinyllama:1.1b` or `smollm:135m`, then `export OLLAMA_MODEL=tinyllama:1.1b`.
+- Enable **low-resource mode** to shrink context and prompts (less RAM/CPU):
+  ```bash
+  export PENGUIDE_LOW_RESOURCE=1
+  export OLLAMA_MODEL=tinyllama:1.1b
+  export OLLAMA_TIMEOUT=20
+  python3 bin/penguide.py
+  ```
+- Optionally limit Ollama’s CPU usage (before starting Penguide): `export OLLAMA_NUM_THREADS=2`.
+- Close other heavy apps while using Penguide.
+
 Example queries:
 - "How do I see running processes?"
 - "What does the kernel do with memory?"
