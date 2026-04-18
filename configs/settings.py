@@ -8,6 +8,13 @@ OLLAMA_URL = os.environ.get("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")
 OLLAMA_MODEL = os.environ.get("OLLAMA_MODEL", "mistral")
 OLLAMA_TIMEOUT = int(os.environ.get("OLLAMA_TIMEOUT", "20"))
 
+# Google Gemini
+GOOGLE_API_KEY = os.environ.get("GOOGLE_API_KEY", "AIzaSyAAH5bew3QsWOn7l-rVPqSuVIcWZ3ajYlQ")
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+
+# LLM Backend: 'ollama' or 'gemini'
+LLM_BACKEND = os.environ.get("PENGUIDE_LLM_BACKEND", "gemini").lower()
+
 # Memory: max conversation turns to include in context (avoid token overflow)
 # Lower = less RAM/CPU for the model. Use 3–6 on slow/low-memory machines.
 MEMORY_MAX_TURNS = int(os.environ.get("PENGUIDE_MEMORY_MAX_TURNS", "20"))

@@ -6,6 +6,7 @@ from core.knowledge import KnowledgeBase
 from configs.teaching import DEFAULT_TEACHING_MODE, COMMAND_TEACHING_HINTS
 from configs.policy import ALLOWED_COMMANDS
 from configs.settings import LOW_RESOURCE
+from core.demo import get_demo_answer
 import os
 import re
 
@@ -81,7 +82,13 @@ class Orchestrator:
 
         prompt = f"{SYSTEM_PROMPT}\n{teaching_header}{env_hint}{policy_hint}{hint_block}User: {user_input}"
 
-        reply = self.agent.think(prompt, full_context).strip()
+        # Check for hardcoded demo answer first
+        demo_answer = get_demo_answer(user_input)
+        if demo_answer:
+            reply = demo_answer
+        else:
+            reply = self.agent.think(prompt, full_context).strip()
+            
         self.memory.add("user", user_input)
 
         cmd, explanation = _extract_command(reply)

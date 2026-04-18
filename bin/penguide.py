@@ -8,7 +8,7 @@ if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
 from core.orchestrator import Orchestrator
-from configs.settings import OLLAMA_MODEL, LOW_RESOURCE
+from configs.settings import OLLAMA_MODEL, GEMINI_MODEL, LLM_BACKEND, LOW_RESOURCE
 from configs.policy import ALLOWED_COMMANDS, DENY_COMMANDS
 from tools.registry import TOOLS
 
@@ -85,10 +85,13 @@ def _format_penguide_output(raw: str) -> str:
 def _print_welcome(mode: str):
     """Print a more informative, chat-like welcome header."""
     title = _color("Penguide - Your Linux & Kernel Guide", BOLD + FG_CYAN)
-    model = os.environ.get("OLLAMA_MODEL", OLLAMA_MODEL)
+    if LLM_BACKEND == "gemini":
+        model = os.environ.get("GEMINI_MODEL", GEMINI_MODEL)
+    else:
+        model = os.environ.get("OLLAMA_MODEL", OLLAMA_MODEL)
 
     print(title)
-    print(_color(f"Model: {model}", FG_MAGENTA))
+    print(_color(f"Model: {model} ({LLM_BACKEND})", FG_MAGENTA))
     print(_color(f"Teaching mode: {mode}", FG_MAGENTA))
     if LOW_RESOURCE:
         print(_color("Low-resource mode: ON (smaller context, less CPU/RAM)", FG_YELLOW))
@@ -120,7 +123,10 @@ def main():
         user_input = " ".join(sys.argv[1:])
         output = orch.step(user_input)
         if output:
-            print(output)
+            formatted = _format_penguide_output(output)
+            print()
+            print(_box("Penguide", formatted, border_color=FG_MAGENTA, title_color=FG_CYAN))
+            print()
         return
 
     # Interactive loop
